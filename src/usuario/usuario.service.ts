@@ -9,10 +9,10 @@ export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private usuariosRepository: Repository<Usuario>,
-  ) {}
+  ) { }
 
   create(createUsuarioDto: CreateUsuarioDto) {
-const usuario = this.usuariosRepository.create({
+    const usuario = this.usuariosRepository.create({
       ...createUsuarioDto,
       estado: createUsuarioDto.estado ?? true, // valor por defecto
     });
