@@ -1,1 +1,19 @@
-export class CreatePersonaDto {}
+import {  IsString, isDate,IsEmail,IsNotEmpty } from "class-validator"
+export class CreatePersonaDto {
+    nombres: string;
+    @IsString()
+    @IsNotEmpty()
+    p_apellido: string;
+    @IsString()
+    @IsNotEmpty()
+    s_apellido: string;
+    @IsString()
+    @IsNotEmpty()
+    fecha_nacimiento: Date;
+    @IsString()
+    @IsNotEmpty()
+    ci: string;
+    @IsString()
+    @IsNotEmpty()
+    genero: string;
+}

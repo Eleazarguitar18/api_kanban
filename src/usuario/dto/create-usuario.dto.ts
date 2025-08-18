@@ -1,18 +1,10 @@
-// import { IsString, IsEmail, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsBoolean, IsNumber,IsNotEmpty } from 'class-validator';
 export class CreateUsuarioDto {
-    // @IsString()
-    name: string;
-
-    // @IsEmail()
+    @IsEmail()
+    @IsNotEmpty()
     email: string;
-
-    // @IsString()
+    @IsString()
+    @IsNotEmpty()
     password: string;
-
-    // @IsOptional()
-    // @IsBoolean()
-    estado?: boolean;
-
-    // @IsNumber()
-    id_user_create: number;
+    estado:boolean=true;
 }

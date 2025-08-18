@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+} from '@nestjs/common';
 import { PersonaService } from './persona.service';
 import { CreatePersonaDto } from './dto/create-persona.dto';
 import { UpdatePersonaDto } from './dto/update-persona.dto';
@@ -8,13 +17,37 @@ export class PersonaController {
   constructor(private readonly personaService: PersonaService) {}
 
   @Post()
-  create(@Body() createPersonaDto: CreatePersonaDto) {
-    return this.personaService.create(createPersonaDto);
+  async create(@Body() createPersonaDto: CreatePersonaDto) {
+    try {
+      const respuesta = await this.personaService.create(createPersonaDto);
+      const data = {
+        status: 200,
+        message: 'Se creo la persona con exito!',
+        data: respuesta,
+      };
+      return data;
+    } catch (error) {
+      // puedes inspeccionar el error y lanzar un HttpException
+      throw new HttpException(
+        {
+          status: error.status || 500,
+          message: error.message || 'Error al crear la persona',
+          details: error.detail || null, // opcional, por ejemplo para errores de DB
+        },
+        error.status || 500,
+      );
+    }
   }
 
   @Get()
-  findAll() {
-    return this.personaService.findAll();
+  async findAll() {
+    const respuesta = await this.personaService.findAll();
+    const data = {
+      status: 200,
+      message: 'Listado de personas registradas!',
+      data: respuesta,
+    };
+    return data;
   }
 
   @Get(':id')
