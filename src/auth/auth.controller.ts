@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -10,6 +10,27 @@ export class AuthController {
   @Post()
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);
+  }
+  @Post('register')
+  async register(@Body() createAuthDto: CreateAuthDto) {
+    try {
+      const respuesta = await this.authService.register(createAuthDto);
+      const data = {
+        status: 200,
+        message: 'Se creo el registro con exito!',
+        data: respuesta,
+      }
+      return data;
+    } catch (error) {
+       throw new HttpException(
+              {
+                status: error.status || 500,
+                message: error.message || 'Error al crear la persona',
+                details: error.detail || null, // opcional, por ejemplo para errores de DB
+              },
+              error.status || 500,
+            );
+    }
   }
 
   @Get()

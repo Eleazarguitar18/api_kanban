@@ -4,14 +4,21 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
+import { PersonaService } from 'src/persona/persona.service';
 @Injectable()
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private usuariosRepository: Repository<Usuario>,
+    private readonly personaService: PersonaService
   ) {}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
+    let persona = null;
+    if (createUsuarioDto.id_persona) {
+      const persona = await this.personaService.findOne(createUsuarioDto.id_persona);
+      if (!persona) throw new Error('Persona no encontrada');
+    }
     const usuario = this.usuariosRepository.create(createUsuarioDto);
     const usuarioData = await this.usuariosRepository.save(usuario);
     return usuarioData;

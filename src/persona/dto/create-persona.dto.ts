@@ -1,5 +1,7 @@
 import {  IsString, isDate,IsEmail,IsNotEmpty } from "class-validator"
 export class CreatePersonaDto {
+    @IsString()
+    @IsNotEmpty()
     nombres: string;
     @IsString()
     @IsNotEmpty()
