@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,19 +9,20 @@ export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private usuariosRepository: Repository<Usuario>,
-  ) { }
+  ) {}
 
-  create(createUsuarioDto: CreateUsuarioDto) {
-    const usuario = this.usuariosRepository.create({
-      ...createUsuarioDto,
-      estado: createUsuarioDto.estado ?? true, // valor por defecto
-    });
-    return this.usuariosRepository.save(usuario);
-    // return 'This action adds a new usuario';
+  async create(createUsuarioDto: CreateUsuarioDto) {
+    const usuario = this.usuariosRepository.create(createUsuarioDto);
+    const usuarioData = await this.usuariosRepository.save(usuario);
+    return usuarioData;
   }
 
-  findAll() {
-    return `This action returns all usuario`;
+  async findAll() {
+    const data = await this.usuariosRepository.find();
+    if (data.length === 0) {
+      throw new NotFoundException(`No existen datos de usuarios`);
+    }
+    return data;
   }
 
   findOne(id: number) {

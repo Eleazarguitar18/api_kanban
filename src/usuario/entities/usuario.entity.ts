@@ -30,7 +30,7 @@ export class Usuario{
   @Column({ default: true })
   estado: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   id_user_create: number;
 
   @Column({ nullable: true })

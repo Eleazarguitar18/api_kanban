@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+} from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -8,13 +17,36 @@ export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuarioService.create(createUsuarioDto);
+  async create(@Body() createUsuarioDto: CreateUsuarioDto) {
+    try {
+      const respuesta = await this.usuarioService.create(createUsuarioDto);
+      const data = {
+        status: 200,
+        message: 'Se creo el usuario con exito!',
+        data: respuesta,
+      };
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: error.status || 500,
+          message: error.message || 'Error al crear la persona',
+          details: error.detail || null, // opcional, por ejemplo para errores de DB
+        },
+        error.status || 500,
+      );
+    }
   }
 
   @Get()
-  findAll() {
-    return this.usuarioService.findAll();
+  async findAll() {
+    const respuesta = await this.usuarioService.findAll();
+    const data = {
+      status: 200,
+      message: 'Listado de usuarios registradas!',
+      data: respuesta,
+    };
+    return data;
   }
 
   @Get(':id')
